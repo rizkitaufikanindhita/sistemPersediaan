@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider  = "prisma-client-js"
+  output    = "../generated/postgres"
+}
+
+datasource dbPostgres {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_POSTGRESQL")
+}
+
+// postgresql
+model User {
+  id       String      @id @default(cuid())
+  name     String
+  nip      String      @unique
+  bagian   String
+  isAdmin  Boolean    @default(false)
+  password String
+  email    String      @unique
+
+  inputBarangs  InputBarang[]
+  outputBarangs OutputBarang[]
+}
+
+model Barang {
+  id           String        @id @default(cuid())
+  namaBarang   String
+  satuanBarang String
+  stokBarang   Int?            @default(0)
+  gambarUrl    String?
+  kategori     String?
+
+  inputBarangDetails  InputBarangDetail[]
+  outputBarangDetails OutputBarangDetail[]
+}
+
+model InputBarang {
+  id                  String   @id @default(cuid())
+  tanggal             String
+  namaPengadaan       String
+  userId              String
+  user                User    @relation(fields: [userId], references: [id])
+  inputBarangDetails  InputBarangDetail[]
+}
+
+model InputBarangDetail {
+  id              String   @id @default(cuid())
+  jumlah          Int
+  barangId        String
+  inputBarangId   String
+
+  barang          Barang      @relation(fields: [barangId], references: [id])
+  inputBarang     InputBarang @relation(fields: [inputBarangId], references: [id])
+
+  @@unique([barangId, inputBarangId])
+}
+
+model OutputBarang {
+  id          String   @id @default(cuid())
+  tanggal     String
+  userId      String
+  bagian      String
+  requestId   String
+  user        User    @relation(fields: [userId], references: [id])
+  outputBarangDetails OutputBarangDetail[]
+}
+
+model OutputBarangDetail {
+  id              String   @id @default(cuid())
+  jumlah          Int
+  barangId        String
+  requestId       String
+  outputBarangId  String
+
+  barang          Barang       @relation(fields: [barangId], references: [id])
+  outputBarang    OutputBarang @relation(fields: [outputBarangId], references: [id])
+
+  @@unique([barangId, outputBarangId])
+}
+
+
