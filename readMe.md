@@ -1,3 +1,11 @@
+Demo
+# Admin
+https://github.com/user-attachments/assets/5b9c99ca-a32e-4f81-a3f2-2f1151cb3238
+
+# User
+https://github.com/user-attachments/assets/1174dc3d-faf1-442c-ae8d-053b99c6ce6a
+
+
 
 # Inventory Management System
 
